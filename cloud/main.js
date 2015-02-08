@@ -1,3 +1,4 @@
+require('cloud/app.js');
 
 // For example - test function.:
 Parse.Cloud.define("hello", function(request, response) {

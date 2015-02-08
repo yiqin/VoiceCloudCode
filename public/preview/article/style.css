@@ -1,0 +1,141 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  position: relative;
+  font-family: proxima-nova, "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "\9ED1\4F53", Arial, sans-serif;
+}
+
+.cover-image {
+  width: 100%;
+  max-height: 768px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+@media (min-device-width: 500px) {
+  .main {
+    width: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
+}
+
+@media (max-device-width: 320px) {
+  .main {
+    width: 320px;
+    position: relative;
+  }
+}
+
+/** 
+ * Smallest Viewport
+ */
+@media all and (max-device-height: 480px) {
+  .cover-image {
+    height: 480px;
+  }
+}
+
+/** 
+ * iPhone 3 & 4
+ */
+@media all and (min-device-height: 480px) {
+  .cover-image {
+    height: 480px;
+  }
+}
+
+/** 
+ * iPhone 5
+ */
+@media all and (min-device-height: 568px) {
+  .cover-image {
+    height: 568px;
+  }
+}
+
+/** 
+ * iPhone 6
+ */
+@media all and (min-device-height: 667px) {
+  .cover-image {
+    height: 667px;
+  }
+}
+
+/** 
+ * iPhone 6 Plus
+ */
+@media all and (min-device-height: 736px) {
+  .cover-image {
+    height: 736px;
+  }
+}
+
+/** 
+ * iPad
+ */
+@media all and (min-device-height: 768px) {
+  .cover-image {
+    height: 768px;
+  }
+}
+
+.wrap {
+  padding: 10px 15px 15px;
+}
+
+.title {
+  line-height: 20px;
+  margin-bottom: 18px;
+}
+
+.title h1 {
+  margin: 10px 0;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.4;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e7e7eb;
+}
+
+.title sub {
+  line-height: 0;
+  color: #8c8c8c;
+  font-size: 15px;
+}
+
+.content {
+  width: 100%;
+  color: #3e3e3e;
+  font-size: 18px;
+}
+
+.content blockquote {
+  margin: 1em 15px;
+  font-style: italic;
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 0 0 0 5px;
+  padding: 10px 5px;
+  font-family: Georgia, Times, "Times New Roman", serif;
+}
+
+.content blockquote p {
+  margin: 0;
+}
+
+.content p {
+  padding: 0 15px;
+  margin: 1em 0;
+}
+
+.content figure, .content img {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: block;
+  vertical-align: text-bottom;
+}

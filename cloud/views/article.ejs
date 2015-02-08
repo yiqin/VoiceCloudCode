@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <link rel="stylesheet" href="style.css">
+    <title><%= title %></title>
+  </head>
+  <body>
+    <div class="main">
+      <div class="cover-image" style="background-image: url(<%- coverImage %>)"></div>
+      <section class="title wrap">
+        <h1><%= title %></h1>
+        <sub><%= createdAt + ' by ' + author %></sub>
+      </section>
+      <section class="content">
+        <%- content %>
+      </section>
+    </div>
+  </body>
+</html>
