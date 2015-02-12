@@ -5,48 +5,106 @@ Parse.Cloud.define("hello", function(request, response) {
   response.success("Hello world!");
 });
 
-
-Parse.Cloud.define("verifyPhoneNumber", function(request, response) {
-    var user = Parse.User.current();
-    var verificationCode = user.get("phoneVerificationCode");
-    if (verificationCode == request.params.phoneVerificationCode) {
-
-        var user1 = Parse.User.current();
-        user1.set("phoneVerified", true);
-        user1.set("phoneNumber", request.params.phoneNumber);
-        
-        user1.save();
-
-        response.success("Success");
-    } else {
-        response.error("Invalid verification code.");
+// Trigger on LikeArticle
+Parse.Cloud.afterSave("LikeArticle", function(request) {
+  query = new Parse.Query("Article");
+  query.get(request.object.get("article").id, {
+    success: function(article) {
+      article.increment("likeCount");
+      article.increment("likeToday");
+      Parse.Cloud.useMasterKey()
+      article.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
     }
+  });
 });
 
+Parse.Cloud.afterDelete("LikeArticle", function(request) {
+  query = new Parse.Query("Article");
+  query.get(request.object.get("article").id, {
+    success: function(article) {
+      article.increment("likeCount", -1);
+      article.increment("likeToday", -1);
+      Parse.Cloud.useMasterKey()
+      article.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
 
-Parse.Cloud.define("sendVerificationCode", function(request, response) {
-    var verificationCode = Math.floor(Math.random()*9999);
-    var user = Parse.User.current();
-    user.set("phoneVerified", false);
-    user.set("phoneVerificationCode", verificationCode);
-    user.set("phoneNumber", request.params.phoneNumber);
-    user.save();
-    
-    // Test
-	var twilio = require('twilio')('AC2496f56a7f2cb2785dd9e736ae990e23', '5922590783110b6493f8bc9f86bf3d20');
-	// Product
-    // var twilio = require('twilio')('AC840912e124927b5100895bc5b9a67f64', 'f83f5ef557fe90f1b1b4c6cc4d569d5c');
-    twilio.sendSms({
-        From: "+13177080548",
-        To: request.params.phoneNumber,
-        Body: "From Voice: your verification code is " + verificationCode + "."
-    }, function(err, responseData) { 
-        if (err) {
-          response.error(err);
-        } else { 
-          response.success("Success");
+// Trigger on Article
+Parse.Cloud.afterDelete("Article", function(request) {
+  query = new Parse.Query("LikeArticle");
+  query.equalTo("article", request.object);
+  query.find({
+    success: function(likes) {
+      Parse.Cloud.useMasterKey()
+      Parse.Object.destroyAll(likes, {
+        success: function() {},
+        error: function(error) {
+          console.error("Error deleting related likes " + error.code + ": " + error.message);
         }
-    });
+      });
+    },
+    error: function(error) {
+      console.error("Error finding related likes " + error.code + ": " + error.message);
+    }
+  });
+});
+
+// Trigger on LikeStreetImage
+Parse.Cloud.afterSave("LikeStreetImage", function(request) {
+  query = new Parse.Query("StreetImage");
+  query.get(request.object.get("streetImage").id, {
+    success: function(streetImage) {
+      streetImage.increment("likeCount");
+      streetImage.increment("likeToday");
+      Parse.Cloud.useMasterKey()
+      streetImage.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+Parse.Cloud.afterDelete("LikeStreetImage", function(request) {
+  query = new Parse.Query("StreetImage");
+  query.get(request.object.get("streetImage").id, {
+    success: function(streetImage) {
+      streetImage.increment("likeCount", -1);
+      streetImage.increment("likeToday", -1);
+      Parse.Cloud.useMasterKey()
+      streetImage.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+// Trigger on StreetImage
+Parse.Cloud.afterDelete("StreetImage", function(request) {
+  query = new Parse.Query("LikeStreetImage");
+  query.equalTo("streetImage", request.object);
+  query.find({
+    success: function(likes) {
+      Parse.Cloud.useMasterKey()
+      Parse.Object.destroyAll(likes, {
+        success: function() {},
+        error: function(error) {
+          console.error("Error deleting related likes " + error.code + ": " + error.message);
+        }
+      });
+    },
+    error: function(error) {
+      console.error("Error finding related likes " + error.code + ": " + error.message);
+    }
+  });
 });
 
 
@@ -75,29 +133,4 @@ Parse.Cloud.beforeSave("StreetDetailImage", function(request, response) {
     response.error(error);
   });
 });
-
-
-Parse.Cloud.beforeSave("StreetDetailImageBeta", function(request, response) {
-  var streetDetailImage = request.object;
- 
-  Parse.Cloud.httpRequest({
-    url: streetDetailImage.get("image").url()
- 
-  }).then(function(response) {
-    var image = new Image();
-    return image.setData(response.buffer);
- 
-  }).then(function(image) {
-    
-    var ratio = image.width()/image.height();
-    streetDetailImage.set("ratio", ratio);
-    streetDetailImage.set("imageHeight", 100);
-
-  }).then(function(result) {
-    response.success();
-  }, function(error) {
-    response.error(error);
-  });
-});
-
 
